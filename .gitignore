@@ -1,3 +1,10 @@
+.vscode
+
+models/*
+!models/.gitkeep
+
+tokenizer.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
