@@ -1,7 +1,5 @@
 .vscode
 
-models/*
-!models/.gitkeep
 
 tokenizer.py
 
