@@ -27,5 +27,6 @@ There are several discussions around the chat format [[1](https://huggingface.co
 
 Currently I'm working on that. The notebook `llama_cpp_vs_meta.ipynb` shows the comparison discrepancy I'm facing now. If you have any tip on that, it'll be very welcome!
 
+Update: It seems to be related to [sentencepiece](https://github.com/google/sentencepiece#whitespace-is-treated-as-a-basic-symbol).
 
 
