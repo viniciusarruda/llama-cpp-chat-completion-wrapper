@@ -1,8 +1,10 @@
 # LLaMA v2 Chat Completion Wrapper
 
-<p align="center">
+<!-- <p align="center">
   <img src="streamlit_example.jpg" width="350">
-</p>
+</p> -->
+
+![Streamlit chat example](streamlit_example.jpg)
 
 Handles chat completion message format to use with [llama-cpp-python](https://github.com/abetlen/llama-cpp-python).
 The code is basically the same as [here](https://github.com/facebookresearch/llama/blob/main/llama/generation.py#L212) (Meta original code).
@@ -22,8 +24,6 @@ pip install -r requirements.txt
 Check `example.py` file.
 
 ### Streamlit 
-
-<!-- ![Streamlit chat example](streamlit_example.jpg) -->
 
 First install streamlit
 
