@@ -1,6 +1,11 @@
 import os
 from llama_cpp_chat_completion_wrapper import Llama2ChatCompletionWrapper, Message
 
+USE_META_TOKENIZER_ENCODER = True
+
+if USE_META_TOKENIZER_ENCODER:
+    from tokenizer import Tokenizer
+
 
 def console_print(message: Message) -> None:
     reset = "\033[00m"
@@ -25,7 +30,16 @@ def main():
         "presence_penalty": 0,
     }
 
-    llm = Llama2ChatCompletionWrapper(model_path=model_path, callback=console_print)
+    if USE_META_TOKENIZER_ENCODER:
+        # Download here: https://ai.meta.com/resources/models-and-libraries/llama-downloads/
+        tokenizer_path = os.path.join(os.environ["MODELS_PATH"], "Meta", "LLaMA2", "tokenizer.model")
+        meta_tokenizer = Tokenizer(model_path=tokenizer_path)
+
+    llm = Llama2ChatCompletionWrapper(
+        model_path=model_path,
+        callback=console_print,
+        tokenizer_encoder=meta_tokenizer.encode if USE_META_TOKENIZER_ENCODER else None,
+    )
 
     llm.new_session(system_content="You are a pirate! Think and speak like one!")
 

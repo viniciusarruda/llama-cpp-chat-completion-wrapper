@@ -72,9 +72,12 @@ def _llama_cpp_tokenizer_encode(s: str, bos: bool, eos: bool, llm: Llama) -> Lis
 
 
 class Llama2ChatCompletionWrapper:
-    def __init__(self, model_path: str, callback: Callable[[Message], None] = None) -> None:
+    def __init__(self, model_path: str, callback: Callable[[Message], None] = None, tokenizer_encoder: Callable = None) -> None:
         self.llm = Llama(model_path=model_path)
-        self._tokenizer_encode = partial(_llama_cpp_tokenizer_encode, llm=self.llm)
+        if tokenizer_encoder is None:
+            self._tokenizer_encode = partial(_llama_cpp_tokenizer_encode, llm=self.llm)
+        else:
+            self._tokenizer_encode = tokenizer_encoder
         self.callback = callback
 
     def new_session(self, system_content: str | None = None, messages: List[Message] | None = None):
