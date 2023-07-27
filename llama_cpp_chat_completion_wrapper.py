@@ -63,7 +63,7 @@ def _llama2_format_messages(messages: List[Message], tokenizer_encode: Callable)
 
 def _llama_cpp_tokenizer_encode(s: str, bos: bool, eos: bool, llm: Llama) -> List[int]:
     assert type(s) is str
-    t = llm.tokenize(text=bytes(s, encoding="utf-8"), add_bos=False)
+    t = llm.tokenize(text=b" " + bytes(s, encoding="utf-8"), add_bos=False)
     if bos:
         t = [llm.token_bos()] + t
     if eos:
@@ -98,7 +98,9 @@ class Llama2ChatCompletionWrapper:
                 for msg in self.messages:
                     self.callback(msg)
 
-    def __call__(self, message: str, post_process: Callable[[str], str] | None = None, params: dict = {}) -> str:
+    def __call__(
+        self, message: str, post_process: Callable[[str], str] | None = None, max_tokens: int = 128, params: dict = {}
+    ) -> str:
         self.messages.append(Message(role="user", content=message))
 
         if self.callback is not None:
@@ -107,9 +109,12 @@ class Llama2ChatCompletionWrapper:
         messages_tokens = _llama2_format_messages(self.messages, tokenizer_encode=self._tokenizer_encode)
 
         completion = self.llm.generate(messages_tokens, **params)
+        max_tokens = (
+            max_tokens if max_tokens + len(messages_tokens) < self.llm._n_ctx else (self.llm._n_ctx - len(messages_tokens))
+        )
         result = []
-        for token in completion:
-            if token == self.llm.token_eos():
+        for i, token in enumerate(completion):
+            if max_tokens == i or token == self.llm.token_eos():
                 break
             result.append(self.llm.detokenize([token]).decode("utf-8"))
 
